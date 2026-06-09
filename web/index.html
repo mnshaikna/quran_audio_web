@@ -29,12 +29,11 @@
       z-index: 9999;
       transition: opacity 0.5s ease;
     }
-    #loading .ar {
-      font-family: 'Noto Naskh Arabic', serif;
-      font-size: 36px;
-      color: #c8974a;
-      direction: rtl;
-      margin-bottom: 12px;
+    #loading .logo {
+      width: 96px; height: 96px;
+      border-radius: 22px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 32px rgba(61,155,138,0.25);
     }
     #loading .en {
       font-family: 'Cinzel', serif;
@@ -60,7 +59,7 @@
 </head>
 <body>
   <div id="loading">
-    <div class="ar">قرآن</div>
+    <img src="icons/app_icon.png" class="logo" alt="Quran Audio">
     <div class="en">Quran Audio</div>
     <div class="dot-row">
       <div class="dot"></div>
