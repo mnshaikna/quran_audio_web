@@ -35,7 +35,7 @@ class _DesktopHero extends StatelessWidget {
     children: [
       Expanded(child: _HeroText()),
       const SizedBox(width: 80),
-      const FloatWidget(child: PhoneMockup()),
+      FloatWidget(child: const PhoneMockup()),
     ],
   );
 }
@@ -44,7 +44,7 @@ class _MobileHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Column(
     children: [
-      const FloatWidget(child: PhoneMockup()),
+      FloatWidget(child: const PhoneMockup()),
       const SizedBox(height: 60),
       _HeroText(),
     ],
@@ -111,6 +111,7 @@ class _HeroText extends StatelessWidget {
           children: const [
             StoreButton(type: StoreType.android),
             StoreButton(type: StoreType.ios),
+            StoreButton(type: StoreType.web),
           ],
         ).animate().fadeIn(delay: 800.ms, duration: 800.ms).slideY(begin: 0.3, end: 0),
       ],

@@ -1,8 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../theme/app_theme.dart';
+import '../utils/constants.dart';
 
-enum StoreType { android, ios }
+enum StoreType { android, ios, web }
 
 class StoreButton extends StatefulWidget {
   final StoreType type;
@@ -17,13 +19,105 @@ class StoreButton extends StatefulWidget {
 class _StoreButtonState extends State<StoreButton> {
   bool _hover = false;
 
-  String get _url => widget.type == StoreType.android
-      ? 'https://play.google.com/store/apps/details?id=com.appswella.quran_audio'
-      : '';
+  String get _url {
+    switch (widget.type) {
+      case StoreType.android:
+        return QAConstants.playStoreUrl;
+      case StoreType.ios:
+        return QAConstants.appStoreUrl;
+      case StoreType.web:
+        return QAConstants.webAppUrl;
+    }
+  }
+
+  Icon get _emoji {
+    switch (widget.type) {
+      case StoreType.android:
+        return const Icon(Icons.android,size: 35,);
+      case StoreType.ios:
+        return const Icon(Icons.apple,size: 35);
+      case StoreType.web:
+        return const Icon(Icons.language,size: 35);
+    }
+  }
+
+  String get _topLabel {
+    switch (widget.type) {
+      case StoreType.android:
+        return 'GET IT ON';
+      case StoreType.ios:
+        return 'DOWNLOAD ON THE';
+      case StoreType.web:
+        return 'ACCESS ON';
+    }
+  }
+
+  String get _bottomLabel {
+    switch (widget.type) {
+      case StoreType.android:
+        return 'Google Play';
+      case StoreType.ios:
+        return 'App Store';
+      case StoreType.web:
+        return 'Web Browser';
+    }
+  }
+
+  // Each platform gets a distinct colour treatment
+  BoxDecoration get _decoration {
+    final hover = _hover;
+    switch (widget.type) {
+      case StoreType.android:
+        return BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [QAColors.teal, QAColors.tealMid],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: QAColors.tealGlow.withOpacity(0.4)),
+          boxShadow: hover
+              ? [
+                  BoxShadow(
+                      color: QAColors.tealGlow.withOpacity(0.25),
+                      blurRadius: 24,
+                      spreadRadius: 2)
+                ]
+              : [],
+        );
+      case StoreType.ios:
+        return BoxDecoration(
+          color: QAColors.gold.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: QAColors.gold.withOpacity(0.35)),
+          boxShadow: hover
+              ? [
+                  BoxShadow(
+                      color: QAColors.gold.withOpacity(0.2),
+                      blurRadius: 24,
+                      spreadRadius: 2)
+                ]
+              : [],
+        );
+      case StoreType.web:
+        return BoxDecoration(
+          color: QAColors.bgCard,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: QAColors.tealGlow.withOpacity(0.25)),
+          boxShadow: hover
+              ? [
+                  BoxShadow(
+                      color: QAColors.tealGlow.withOpacity(0.15),
+                      blurRadius: 24,
+                      spreadRadius: 2)
+                ]
+              : [],
+        );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final isAndroid = widget.type == StoreType.android;
     final large = widget.large;
 
     return MouseRegion(
@@ -37,9 +131,13 @@ class _StoreButtonState extends State<StoreButton> {
             if (await canLaunchUrl(uri)) launchUrl(uri);
           } else {
             final customSnackBar = SnackBar(
-              content: const Text('COMING SOON on iOS'),
+              content:  Center(
+                  child: Text(
+                    ('We are Coming Soon!!!').toString().toUpperCase(),
+                style:
+                    const TextStyle(fontWeight: FontWeight.w900, letterSpacing: 1.5),
+              )),
               behavior: SnackBarBehavior.floating,
-              //backgroundColor: Colors.redAccent,
               elevation: 6.0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -56,56 +154,23 @@ class _StoreButtonState extends State<StoreButton> {
             horizontal: large ? 32 : 22,
             vertical: large ? 18 : 13,
           ),
-          decoration: BoxDecoration(
-            gradient: isAndroid
-                ? const LinearGradient(
-                    colors: [QAColors.teal, QAColors.tealMid],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  )
-                : null,
-            color: isAndroid ? null : QAColors.gold.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: isAndroid
-                  ? QAColors.tealGlow.withOpacity(0.4)
-                  : QAColors.gold.withOpacity(0.35),
-            ),
-            boxShadow: _hover
-                ? [
-                    BoxShadow(
-                      color: (isAndroid ? QAColors.tealGlow : QAColors.gold)
-                          .withOpacity(0.2),
-                      blurRadius: 24,
-                      spreadRadius: 2,
-                    )
-                  ]
-                : [],
-          ),
+          decoration: _decoration,
           transform: Matrix4.identity()..translate(0.0, _hover ? -3.0 : 0.0),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(isAndroid ? Icons.android_sharp : Icons.apple_sharp),
+              _emoji,
               SizedBox(width: large ? 14 : 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    isAndroid ? 'GET IT ON' : 'DOWNLOAD ON THE',
-                    style: QATextStyles.label(
-                      large ? 10 : 9,
-                      color: QAColors.textMuted,
-                    ),
-                  ),
-                  Text(
-                    isAndroid ? 'Google Play' : 'App Store',
-                    style: QATextStyles.label(
-                      large ? 18 : 15,
-                      color: QAColors.textMain,
-                    ),
-                  ),
+                  Text(_topLabel,
+                      style: QATextStyles.label(large ? 10 : 9,
+                          color: QAColors.textMuted)),
+                  Text(_bottomLabel,
+                      style: QATextStyles.label(large ? 18 : 15,
+                          color: QAColors.textMain)),
                 ],
               ),
             ],

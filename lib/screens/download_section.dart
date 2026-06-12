@@ -6,7 +6,7 @@ import '../widgets/common_widgets.dart';
 import '../widgets/store_button.dart';
 
 class DownloadSection extends StatelessWidget {
-  const DownloadSection({super.key});
+  const DownloadSection({super.key}); // key passed from LandingPage
 
   @override
   Widget build(BuildContext context) {
@@ -28,15 +28,17 @@ class DownloadSection extends StatelessWidget {
       ),
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 800),
+          constraints: const BoxConstraints(maxWidth: 860),
           child: Column(
             children: [
-              // Faded Arabic verse
+              // Arabic verse
               RevealWidget(
                 child: Text(
                   QAConstants.downloadArabic,
-                  style: QATextStyles.arabic(isMob ? 28 : 42,
-                      color: QAColors.gold.withOpacity(0.28)),
+                  style: QATextStyles.arabic(
+                    isMob ? 28 : 42,
+                    color: QAColors.gold.withOpacity(0.28),
+                  ),
                   textDirection: TextDirection.rtl,
                   textAlign: TextAlign.center,
                 ),
@@ -88,27 +90,41 @@ class DownloadSection extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 48),
-              // Store buttons
-              const RevealWidget(
+
+              // ── 3 store buttons ──────────────────────────────────
+              RevealWidget(
                 child: Wrap(
-                  spacing: 20,
+                  spacing: 16,
                   runSpacing: 16,
                   alignment: WrapAlignment.center,
-                  children: [
+                  children: const [
                     StoreButton(type: StoreType.android, large: true),
                     StoreButton(type: StoreType.ios, large: true),
+                    StoreButton(type: StoreType.web, large: true),
                   ],
                 ),
               ),
               const SizedBox(height: 60),
-              //  placeholders
+
+              // ── 3 QR codes ───────────────────────────────────────
               const RevealWidget(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Wrap(
+                  spacing: 40,
+                  runSpacing: 32,
+                  alignment: WrapAlignment.center,
                   children: [
-                    _QrItem('Android'),
-                    SizedBox(width: 48),
-                    _QrItem('iOS'),
+                    _QrItem(
+                        label: 'Android',
+                        isPlaceholder: false,
+                        assetPath: 'assets/qr/android.png'),
+                    _QrItem(
+                        label: 'iOS',
+                        isPlaceholder: false,
+                        assetPath: 'assets/qr/ios.png'),
+                    _QrItem(
+                        label: 'Web',
+                        isPlaceholder: false,
+                        assetPath: 'assets/qr/web.png'),
                   ],
                 ),
               ),
@@ -122,20 +138,78 @@ class DownloadSection extends StatelessWidget {
 
 class _QrItem extends StatelessWidget {
   final String label;
+  final bool isPlaceholder;
+  final String? assetPath;
 
-  const _QrItem(this.label);
+  const _QrItem({
+    required this.label,
+    required this.isPlaceholder,
+    this.assetPath,
+  });
 
   @override
   Widget build(BuildContext context) => Column(
         children: [
-          Image.asset(
-            'assets/qr/${label.toLowerCase()}.png',
+          Container(
             width: 100,
             height: 100,
+            decoration: BoxDecoration(
+              color: isPlaceholder ? QAColors.bgCard : Colors.white,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: isPlaceholder
+                    ? QAColors.tealGlow.withOpacity(0.25)
+                    : QAColors.gold.withOpacity(0.4),
+                width: isPlaceholder ? 1 : 2,
+              ),
+              boxShadow: isPlaceholder
+                  ? []
+                  : [
+                      BoxShadow(
+                        color: QAColors.gold.withOpacity(0.15),
+                        blurRadius: 16,
+                        spreadRadius: 2,
+                      )
+                    ],
+            ),
+            child: isPlaceholder
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('▦',
+                          style: TextStyle(
+                              fontSize: 28, color: QAColors.textFaint)),
+                      Text(
+                        'Coming soon',
+                        style: QATextStyles.body(8,
+                            color: QAColors.textFaint, height: 1.2),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  )
+                : ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(
+                      assetPath!,
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => const Icon(
+                        Icons.qr_code_2_rounded,
+                        color: QAColors.tealGlow,
+                        size: 48,
+                      ),
+                    ),
+                  ),
           ),
-          const SizedBox(height: 8),
-          Text(label.toUpperCase(),
-              style: QATextStyles.label(11, color: QAColors.textFaint)),
+          const SizedBox(height: 10),
+          Text(
+            label.toUpperCase(),
+            style: QATextStyles.label(
+              11,
+              color: isPlaceholder ? QAColors.textFaint : QAColors.goldLight,
+            ),
+          ),
         ],
       );
 }

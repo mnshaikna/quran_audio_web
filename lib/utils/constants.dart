@@ -5,7 +5,8 @@ class QAConstants {
   static const appSubtitle   = 'Free Quran MP3';
   static const tagline       = 'Listen. Learn. Reflect.';
   static const playStoreUrl  = 'https://play.google.com/store/apps/details?id=com.appswella.quran_audio';
-  static const appStoreUrl   = '#'; // Replace with real App Store URL
+  static const appStoreUrl   = '';
+  static const webAppUrl     = 'https://quranaudio.cloud';
 
   static const heroArabic    = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
   static const downloadArabic= 'وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا';
