@@ -66,7 +66,7 @@ class _MobileFooter extends StatelessWidget {
 class _FooterLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
+    crossAxisAlignment: CrossAxisAlignment.end,
     children: [
       Row(
         mainAxisSize: MainAxisSize.min,
@@ -88,8 +88,8 @@ class _FooterLogo extends StatelessWidget {
           ),
         ],
       ),
-      const SizedBox(height: 4),
-      Text(QAConstants.tagline, style: QATextStyles.body(12, color: QAColors.textFaint, height: 1)),
+      //const SizedBox(height: 4),
+      Text(QAConstants.tagline, style: QATextStyles.body(12, color: QAColors.textFaint, height: 1).copyWith(fontWeight: FontWeight.bold)),
     ],
   );
 }

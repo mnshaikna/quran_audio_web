@@ -18,7 +18,7 @@ class FeaturesSection extends StatelessWidget {
           constraints: BoxConstraints(maxWidth: Responsive.maxWidth(context)),
           child: Column(
             children: [
-              RevealWidget(
+             const RevealWidget(
                 child: SectionHeader(
                   eyebrow: 'EVERYTHING YOU NEED',
                   title: 'A complete Quran ',

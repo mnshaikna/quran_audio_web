@@ -76,13 +76,13 @@ class PhoneMockup extends StatelessWidget {
                     borderRadius: BorderRadius.circular(48),
                   ),
                   alignment: Alignment.center,
-                  child: Text('📱', style: TextStyle(fontSize: 60)),
+                  child: const Text('📱', style: TextStyle(fontSize: 60)),
                 ),
               ),
             ),
           ),
           // Floating stat badge — top right
-          Positioned(
+          const Positioned(
             right: -24,
             top: 80,
             child: _FloatingBadge(
@@ -92,7 +92,7 @@ class PhoneMockup extends StatelessWidget {
             ),
           ),
           // Floating stat badge — bottom left
-          Positioned(
+          const Positioned(
             left: -24,
             bottom: 120,
             child: _FloatingBadge(

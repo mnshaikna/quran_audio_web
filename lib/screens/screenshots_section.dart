@@ -20,7 +20,7 @@ class ScreenshotsSection extends StatelessWidget {
           constraints: BoxConstraints(maxWidth: Responsive.maxWidth(context)),
           child: Column(
             children: [
-              RevealWidget(
+              const RevealWidget(
                 child: SectionHeader(
                   eyebrow: 'SEE IT IN ACTION',
                   title: 'Beautifully ',
@@ -44,7 +44,7 @@ class _DesktopRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screens = QAConstants.screens;
+    const screens = QAConstants.screens;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,7 +74,7 @@ class _DesktopRow extends StatelessWidget {
 class _MobileRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final screens = QAConstants.screens.take(3).toList();
+    final screens = QAConstants.screens.take(5).toList();
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       physics: const BouncingScrollPhysics(),

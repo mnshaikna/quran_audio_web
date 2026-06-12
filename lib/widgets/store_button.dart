@@ -19,7 +19,7 @@ class _StoreButtonState extends State<StoreButton> {
 
   String get _url => widget.type == StoreType.android
       ? 'https://play.google.com/store/apps/details?id=com.appswella.quran_audio'
-      : '#';
+      : '';
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +32,23 @@ class _StoreButtonState extends State<StoreButton> {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () async {
-          final uri = Uri.parse(_url);
-          if (await canLaunchUrl(uri)) launchUrl(uri);
+          if (_url.trim().isNotEmpty) {
+            final uri = Uri.parse(_url);
+            if (await canLaunchUrl(uri)) launchUrl(uri);
+          } else {
+            final customSnackBar = SnackBar(
+              content: const Text('COMING SOON on iOS'),
+              behavior: SnackBarBehavior.floating,
+              //backgroundColor: Colors.redAccent,
+              elevation: 6.0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              showCloseIcon: true,
+            );
+
+            ScaffoldMessenger.of(context).showSnackBar(customSnackBar);
+          }
         },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 220),

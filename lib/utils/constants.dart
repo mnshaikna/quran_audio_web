@@ -71,7 +71,7 @@ class QAConstants {
     _ScreenData('Dashboard',    'assets/screens/screen_dashboard.png'),
     _ScreenData('Audio Player', 'assets/screens/screen_player.png'),
     _ScreenData('Ayah View',    'assets/screens/screen_ayah.png'),
-    _ScreenData('Qari Library', 'assets/screens/screen_qari_list.png'),
+    _ScreenData('Offline Library', 'assets/screens/screen_qari_list.png'),
     _ScreenData('Playlist',     'assets/screens/screen_playlist.png'),
   ];
 }

@@ -34,7 +34,7 @@ class QATextStyles {
   static TextStyle cinzel(double size, {Color? color, FontWeight? weight}) =>
     GoogleFonts.cinzel(
       fontSize: size,
-      fontWeight: weight ?? FontWeight.w400,
+      fontWeight: weight ?? FontWeight.w900,
       color: color ?? QAColors.textMain,
       letterSpacing: size > 14 ? 3.0 : 1.5,
     );
@@ -50,7 +50,7 @@ class QATextStyles {
   static TextStyle label(double size, {Color? color}) =>
     GoogleFonts.dmSans(
       fontSize: size,
-      fontWeight: FontWeight.w400,
+      fontWeight: FontWeight.w900,
       color: color ?? QAColors.textMuted,
       letterSpacing: 1.2,
     );

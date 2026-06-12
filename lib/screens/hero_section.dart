@@ -35,7 +35,7 @@ class _DesktopHero extends StatelessWidget {
     children: [
       Expanded(child: _HeroText()),
       const SizedBox(width: 80),
-      FloatWidget(child: const PhoneMockup()),
+      const FloatWidget(child: PhoneMockup()),
     ],
   );
 }
@@ -44,7 +44,7 @@ class _MobileHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Column(
     children: [
-      FloatWidget(child: const PhoneMockup()),
+      const FloatWidget(child: PhoneMockup()),
       const SizedBox(height: 60),
       _HeroText(),
     ],

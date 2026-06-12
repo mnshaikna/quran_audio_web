@@ -46,12 +46,12 @@ class DownloadSection extends StatelessWidget {
                 child: Column(children: [
                   Text(
                     QAConstants.downloadArabicTrans,
-                    style: QATextStyles.body(14, color: QAColors.textFaint),
+                    style: QATextStyles.body(14, color: QAColors.goldPale),
                     textAlign: TextAlign.center,
                   ),
                   Text(
                     QAConstants.downloadArabicRef,
-                    style: QATextStyles.label(12, color: QAColors.tealGlow),
+                    style: QATextStyles.label(12, color: QAColors.goldPale),
                     textAlign: TextAlign.center,
                   ),
                 ]),

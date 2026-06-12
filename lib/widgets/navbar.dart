@@ -6,7 +6,13 @@ import '../utils/responsive.dart';
 
 class NavBar extends StatefulWidget {
   final ScrollController scrollController;
-  const NavBar({super.key, required this.scrollController});
+  final void Function(String anchor) onNavTap;
+
+  const NavBar({
+    super.key,
+    required this.scrollController,
+    required this.onNavTap,
+  });
 
   @override
   State<NavBar> createState() => _NavBarState();
@@ -53,63 +59,85 @@ class _NavBarState extends State<NavBar> {
       ),
       child: Row(
         children: [
-          // Logo
-          _Logo(),
+          _Logo(onTap: () => widget.onNavTap('hero')),
           const Spacer(),
-          // Links (desktop only)
           if (!isMob) ...[
-            _NavLink('Features',     '#features'),
+            _NavLink('Features',     'features',    widget.onNavTap),
             const SizedBox(width: 32),
-            _NavLink('Reciters',     '#reciters'),
+            _NavLink('Reciters',     'reciters',    widget.onNavTap),
             const SizedBox(width: 32),
-            _NavLink('Prayer Times', '#prayer'),
+            _NavLink('Screenshots',  'screenshots', widget.onNavTap),
+            const SizedBox(width: 32),
+            _NavLink('Prayer Times', 'prayer',      widget.onNavTap),
             const SizedBox(width: 40),
           ],
-          // CTA button
-          _CtaButton(),
+          _CtaButton(onTap: () => widget.onNavTap('download')),
         ],
       ),
     );
   }
 }
 
-class _Logo extends StatelessWidget {
+// ── Logo — tapping scrolls back to top ────────────────────────────────────────
+class _Logo extends StatefulWidget {
+  final VoidCallback onTap;
+  const _Logo({required this.onTap});
   @override
-  Widget build(BuildContext context) => Row(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: Image.asset(
-          'assets/icons/app_icon.png',
-          width: 36, height: 36,
-          fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) =>
-            Text('قرآن', style: QATextStyles.arabic(18, color: QAColors.tealGlow)),
+  State<_Logo> createState() => _LogoState();
+}
+
+class _LogoState extends State<_Logo> {
+  bool _hover = false;
+  @override
+  Widget build(BuildContext context) => MouseRegion(
+    onEnter: (_) => setState(() => _hover = true),
+    onExit:  (_) => setState(() => _hover = false),
+    cursor: SystemMouseCursors.click,
+    child: GestureDetector(
+      onTap: widget.onTap,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 200),
+        opacity: _hover ? 0.8 : 1.0,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.asset(
+                'assets/icons/app_icon.png',
+                width: 36, height: 36,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) =>
+                  Text('قرآن', style: QATextStyles.arabic(18, color: QAColors.tealGlow)),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  QAConstants.appName.toUpperCase(),
+                  style: QATextStyles.cinzel(13, color: QAColors.goldLight, weight: FontWeight.w600),
+                ),
+                Text(
+                  QAConstants.appSubtitle.toUpperCase(),
+                  style: QATextStyles.cinzel(8, color: QAColors.tealGlow),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
-      const SizedBox(width: 10),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            QAConstants.appName.toUpperCase(),
-            style: QATextStyles.cinzel(13, color: QAColors.goldLight, weight: FontWeight.w600),
-          ),
-          Text(
-            QAConstants.appSubtitle.toUpperCase(),
-            style: QATextStyles.cinzel(8, color: QAColors.tealGlow),
-          ),
-        ],
-      ),
-    ],
+    ),
   );
 }
 
+// ── Nav link — fires onNavTap(anchor) on click ────────────────────────────────
 class _NavLink extends StatefulWidget {
   final String label, anchor;
-  const _NavLink(this.label, this.anchor);
+  final void Function(String) onNavTap;
+  const _NavLink(this.label, this.anchor, this.onNavTap);
   @override
   State<_NavLink> createState() => _NavLinkState();
 }
@@ -121,18 +149,24 @@ class _NavLinkState extends State<_NavLink> {
     onEnter: (_) => setState(() => _hover = true),
     onExit:  (_) => setState(() => _hover = false),
     cursor: SystemMouseCursors.click,
-    child: AnimatedDefaultTextStyle(
-      duration: const Duration(milliseconds: 200),
-      style: QATextStyles.label(
-        13,
-        color: _hover ? QAColors.goldLight : QAColors.textMuted,
+    child: GestureDetector(
+      onTap: () => widget.onNavTap(widget.anchor),
+      child: AnimatedDefaultTextStyle(
+        duration: const Duration(milliseconds: 200),
+        style: QATextStyles.label(
+          13,
+          color: _hover ? QAColors.goldLight : QAColors.textMuted,
+        ),
+        child: Text(widget.label),
       ),
-      child: Text(widget.label),
     ),
   );
 }
 
+// ── CTA button — scrolls to Download section ─────────────────────────────────
 class _CtaButton extends StatefulWidget {
+  final VoidCallback onTap;
+  const _CtaButton({required this.onTap});
   @override
   State<_CtaButton> createState() => _CtaButtonState();
 }
@@ -145,12 +179,12 @@ class _CtaButtonState extends State<_CtaButton> {
     onExit:  (_) => setState(() => _hover = false),
     cursor: SystemMouseCursors.click,
     child: GestureDetector(
-      onTap: () => launchUrl(Uri.parse(QAConstants.playStoreUrl)),
+      onTap: widget.onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
+          gradient: const LinearGradient(
             colors: [QAColors.gold, QAColors.goldLight],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
