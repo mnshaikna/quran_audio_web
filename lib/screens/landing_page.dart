@@ -21,12 +21,70 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
   final _scrollCtrl = ScrollController();
 
-  // One GlobalKey per nav-targetable section
   final _keyFeatures = GlobalKey();
   final _keyReciters = GlobalKey();
   final _keyScreenshots = GlobalKey();
   final _keyPrayer = GlobalKey();
   final _keyDownload = GlobalKey();
+
+  // Which nav anchor is currently active
+  String _activeAnchor = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollCtrl.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollCtrl.removeListener(_onScroll);
+    _scrollCtrl.dispose();
+    super.dispose();
+  }
+
+  // ── Detect which section is in view ───────────────────────────────────────
+  void _onScroll() {
+    final offset = _scrollCtrl.offset;
+    final navHeight = 80.0; // approximate navbar height
+
+    // Build a map of anchor → top-of-section scroll offset
+    final sections = {
+      'features': _sectionOffset(_keyFeatures),
+      'reciters': _sectionOffset(_keyReciters),
+      'screenshots': _sectionOffset(_keyScreenshots),
+      'prayer': _sectionOffset(_keyPrayer),
+      'download': _sectionOffset(_keyDownload),
+    };
+
+    String active = '';
+
+    // Walk in reverse so the topmost visible section wins
+    for (final entry in sections.entries.toList().reversed) {
+      final top = entry.value;
+      if (top == null) continue;
+      // Section is "active" when its top edge has scrolled past the navbar
+      if (offset >= top - navHeight - 40) {
+        active = entry.key;
+        break;
+      }
+    }
+
+    if (active != _activeAnchor) {
+      setState(() => _activeAnchor = active);
+    }
+  }
+
+  // Returns the accumulated scroll offset of a section's top edge
+  double? _sectionOffset(GlobalKey key) {
+    final ctx = key.currentContext;
+    if (ctx == null) return null;
+    final box = ctx.findRenderObject() as RenderBox?;
+    if (box == null) return null;
+    // Position relative to the scroll view's top
+    final pos = box.localToGlobal(Offset.zero);
+    return _scrollCtrl.offset + pos.dy;
+  }
 
   void _scrollTo(GlobalKey key) {
     final ctx = key.currentContext;
@@ -35,14 +93,8 @@ class _LandingPageState extends State<LandingPage> {
       ctx,
       duration: const Duration(milliseconds: 700),
       curve: Curves.easeInOutCubic,
-      alignment: 0.0, // top of viewport
+      alignment: 0.0,
     );
-  }
-
-  @override
-  void dispose() {
-    _scrollCtrl.dispose();
-    super.dispose();
   }
 
   @override
@@ -51,34 +103,27 @@ class _LandingPageState extends State<LandingPage> {
       backgroundColor: QAColors.bgDeep,
       body: Stack(
         children: [
-          // Fixed geometric background
           const Positioned.fill(child: GeoBg()),
-
-          // Fixed glow blobs
           Positioned(
-            top: -200,
-            left: -150,
-            child: GlowBlob(color: QAColors.teal.withOpacity(0.32), size: 600),
-          ),
+              top: -200,
+              left: -150,
+              child:
+                  GlowBlob(color: QAColors.teal.withOpacity(0.32), size: 600)),
           Positioned(
-            top: 600,
-            right: -200,
-            child: GlowBlob(color: QAColors.gold.withOpacity(0.10), size: 500),
-          ),
+              top: 600,
+              right: -200,
+              child:
+                  GlowBlob(color: QAColors.gold.withOpacity(0.10), size: 500)),
           Positioned(
-            bottom: -200,
-            left: 300,
-            child: GlowBlob(color: QAColors.teal.withOpacity(0.18), size: 700),
-          ),
-
-          // Scrollable content
+              bottom: -200,
+              left: 300,
+              child:
+                  GlowBlob(color: QAColors.teal.withOpacity(0.18), size: 700)),
           SingleChildScrollView(
             controller: _scrollCtrl,
             physics: const ClampingScrollPhysics(),
             child: Column(
               children: [
-                // Spacer for fixed navbar
-                const SizedBox(height: 0),
                 const HeroSection(),
                 const QADivider(),
                 const StatsBar(),
@@ -96,14 +141,13 @@ class _LandingPageState extends State<LandingPage> {
               ],
             ),
           ),
-
-          // Fixed navbar overlay
           Positioned(
             top: 0,
             left: 0,
             right: 0,
             child: NavBar(
               scrollController: _scrollCtrl,
+              activeAnchor: _activeAnchor,
               onNavTap: (anchor) {
                 switch (anchor) {
                   case 'features':
